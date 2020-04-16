@@ -33,8 +33,8 @@ TEST_CASE("Test for find function"){
     CHECK(tree.find("me") == string("yosef"));
     CHECK(tree.find("father") == string("avi"));
     CHECK(tree.find("mother") == string("rivka"));
-    CHECK(tree.find("grandfather") == string("moshe") || tree.find("grandfather") == string("israel") );
-    CHECK(tree.find("grandmother") == string("mira") || tree.find("grandmother") == string("rina"));
+    CHECK(((tree.find("grandfather") == string("moshe")) || (tree.find("grandfather") == string("israel") )));
+    CHECK(((tree.find("grandmother") == string("mira")) || (tree.find("grandmother") == string("rina"))));
     
     tree.addFather("israel","Elon");
     CHECK(tree.find("great-grandfather") == string("Elon"));
@@ -46,10 +46,10 @@ TEST_CASE("Test for find function"){
     tree.addFather("rina","haim");
     
     string great_grandfather;
-    CHECK_NOTHROW(great_grandfather = T.find("great-great-grandfather")); 
+    CHECK_NOTHROW(great_grandfather = tree.find("great-great-grandfather")); 
     
-    CHECK( great_grandfather == string("sami")||great_grandfather == string("dan")||great_grandfather == string("Elon")
-    ||great_grandfather == string("haim"));
+    CHECK(( (great_grandfather == string("sami"))||(great_grandfather == string("dan"))||(great_grandfather == string("Elon"))
+   ||(great_grandfather == string("haim"))));
     
 
     CHECK_THROWS_AS(tree.find("sister") , RuleException);
