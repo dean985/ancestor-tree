@@ -33,12 +33,7 @@ TEST_CASE("Test for find function"){
     CHECK(tree.find("me") == string("yosef"));
     CHECK(tree.find("father") == string("avi"));
     CHECK(tree.find("mother") == string("rivka"));
-    ////// for dummy check perpous //////////
-    CHECK(tree.find("me") == string("yosef"));
-    CHECK(tree.find("father") == string("avi"));
-    CHECK(tree.find("mother") == string("rivka"));
 
-    /////////////////////////////////////////////////////////
     CHECK(((tree.find("grandfather") == string("moshe")) || (tree.find("grandfather") == string("israel") )));
     CHECK(((tree.find("grandmother") == string("mira")) || (tree.find("grandmother") == string("rina"))));
     
@@ -57,7 +52,7 @@ TEST_CASE("Test for find function"){
     CHECK(( (great_grandfather == string("sami"))||(great_grandfather == string("dan"))||(great_grandfather == string("Elon"))
    ||(great_grandfather == string("haim"))));
     
-
+    CHECK_THROWS(Tree.find("uncle"))
     CHECK_THROWS_AS(tree.find("sister") , RuleException);
     CHECK_THROWS_AS(tree.find(""), RuleException);
     CHECK_THROWS_AS(tree.find("grandma") , RuleException);
@@ -86,6 +81,7 @@ TEST_CASE("Test for relation function")
     CHECK(tree.relation("rinah") == string("unrelated"));
     
     ////////////////////////////////////////////////
+    CHECK(tree.relation("name") == string("unrelated"));
     
     tree.addFather("moshe","Elon");
     CHECK(tree.relation("Elon") == string("great-grandfather"));
@@ -121,8 +117,7 @@ TEST_CASE("Test for relation function")
     CHECK(T.relation("Ronen") == string("grandfather"));
     CHECK(T.relation("Almog") == string("great-grandfather"));
 
-
-    
+   
 
     
 }
