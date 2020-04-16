@@ -52,9 +52,10 @@ TEST_CASE("Test for find function"){
     CHECK(( (great_grandfather == string("sami"))||(great_grandfather == string("dan"))||(great_grandfather == string("Elon"))
    ||(great_grandfather == string("haim"))));
     
-    CHECK_THROWS(Tree.find("uncle"));
+
     
-    CHECK_THROWS_AS(tree.find("sister") , RuleException);
+    CHECK_THROWS_AS(tree.find("father ") , RuleException);
+     CHECK_THROWS_AS(tree.find("sister") , RuleException);
     CHECK_THROWS_AS(tree.find(""), RuleException);
     CHECK_THROWS_AS(tree.find("grandma") , RuleException);
     CHECK_THROWS_AS(tree.find("grandpa") , RuleException);
