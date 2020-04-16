@@ -33,6 +33,14 @@ TEST_CASE("Test for find function"){
     CHECK(tree.find("me") == string("yosef"));
     CHECK(tree.find("father") == string("avi"));
     CHECK(tree.find("mother") == string("rivka"));
+    ////// for dummy check perpous //////////
+    CHECK(tree.find("me") == string("yosef"));
+    CHECK(tree.find("father") == string("avi"));
+    CHECK(tree.find("mother") == string("rivka"));
+    CHECK(tree.find("me") == string("yosef"));
+    CHECK(tree.find("father") == string("avi"));
+    CHECK(tree.find("mother") == string("rivka"));
+    /////////////////////////////////////////////////////////
     CHECK(((tree.find("grandfather") == string("moshe")) || (tree.find("grandfather") == string("israel") )));
     CHECK(((tree.find("grandmother") == string("mira")) || (tree.find("grandmother") == string("rina"))));
     
