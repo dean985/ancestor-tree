@@ -27,7 +27,6 @@ namespace family{
                 father = nullptr;
                 mother = nullptr;
             }
-
     };
 
     class Tree{
@@ -41,7 +40,16 @@ namespace family{
                 Person* p  = new Person(child, nullptr, nullptr);
                 root = p;
             }
-                    
+            ~Tree(){
+                if (root != nullptr){
+                    if(root->father != nullptr){
+                        delete root->father;
+                    }
+                    if(root->mother != nullptr){
+                        delete root->mother;
+                    }
+                }
+            };
 
             Tree& addFather(string child, string father);
             Tree& addFather(string child, string father, Person* start);

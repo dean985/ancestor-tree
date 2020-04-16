@@ -1,8 +1,9 @@
 #include "FamilyTree.hpp"
 using namespace family;
+//TODO start with father -> root -> mother
 
 Tree& Tree::addFather(string child, string father){
-    Tree::addFather(child, father, this->root);
+    // Tree::addFather(child, father, this->root);
     return *this;
 }
 
@@ -24,7 +25,7 @@ Tree& Tree::addFather(string child, string father, Person* start){
 
 
  Tree& Tree::addMother(string child, string mother){
-    Tree::addMother(child, mother, this->root); 
+    // Tree::addMother(child, mother, this->root); 
     return *this;
  }
 Tree& Tree::addMother(string child, string mother, Person* start){
@@ -42,7 +43,6 @@ Tree& Tree::addMother(string child, string mother, Person* start){
     }
     return *this;
 }
-
 
 
 
