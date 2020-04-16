@@ -138,6 +138,7 @@ TEST_CASE("Test for addFather function"){
     //Trying non existing family members
     CHECK_THROWS_AS(tree.addFather("abcd", "yosef"), RuleException);
     CHECK_THROWS_AS(tree.addFather("1234", "elad"), RuleException);
+    CHECK_THROWS_AS(tree.addFather("@#$!$", "elad"), RuleException);
 
     //Adding an empty name
     CHECK_NOTHROW(tree.addFather("mira", ""));
