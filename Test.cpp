@@ -175,8 +175,8 @@ TEST_CASE("Test for addFather function"){
     CHECK(t.find("great-grandfather") == string("iftah"));
     CHECK(t.find("great-great-grandfather") == string("iftah"));
 
-    delete &t;
-    delete &tree;
+//     delete &t;
+//     delete &tree;
 }
 TEST_CASE("Test for addMother function"){
     Tree t("yoni");
@@ -200,7 +200,7 @@ TEST_CASE("Test for addMother function"){
     //A space as a name for a person
     CHECK_NOTHROW(t.addMother("", " "));
 
-    delete &t;
+  //  delete &t;
 }
 TEST_CASE("Test for remove function"){
     Tree t = getTree();
@@ -239,6 +239,6 @@ TEST_CASE("Test for remove function"){
     CHECK(t.relation("shulman") == string("unrelated"));
     CHECK(t.relation("shula") == string("unrelated"));
 
-    delete &t;
+    //delete &t;
 }
 
