@@ -40,28 +40,17 @@ namespace family{
                 Person* p  = new Person(child, nullptr, nullptr);
                 root = p;
             }
-            ~Tree(){
-                if (root != nullptr){
-                    if(root->father != nullptr){
-                        delete root->father;
-                    }
-                    if(root->mother != nullptr){
-                        delete root->mother;
-                    }
-                }
-            };
-
+//TODO Destructor?
             Tree& addFather(string child, string father);
-            Tree& addFather(string child, string father, Person* start);
-
             Tree& addMother(string child, string mother);
-            Tree& addMother(string child, string mother, Person* start);
-       
-            
+
+            Person *getPerson(string wanted, Person *start);
+
             string relation(string family_memeber_name);
             string find(string family_relation );
             void display();
             void remove(string name);
+            void remove(Person *toDelete);
 
     };
 
