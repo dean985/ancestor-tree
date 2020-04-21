@@ -1,40 +1,75 @@
 #include "FamilyTree.hpp"
+#include <iostream>
 using namespace family;
-//TODO start with father -> root -> mother
-/**
- * This method receives two arguments - 
- *      name of the person wanted
- *      the person in the tree to start search from
- * It returns the node of that person, going by father-root-mother -> Left-Root-Right
- */
+
+
+
+
+
+////////////////////////////////////////////////////////////
+/////////////// assistent functions ///////////////////////
+//////////////////////////////////////////////////////////
+
+Person* search(int height,char gender,Person* root)
+{
+    if(height == 0)
+        return root;
+    if(gender == 'm')
+        {
+            return search(height - 1, gender,root->father);
+        }
+    if(gender == 'f')
+        {
+            return search(height - 1, gender,root->mother);
+        }
+        return NULL;
+}
+
+Person* search(Person* root, string key) 
+{ 
+    if (root == nullptr || root->name == key) 
+       return root; 
+     
+    // Key is greater than root's key 
+        return search(root->father, key); 
+  
+    // Key is smaller than root's key 
+        return search(root->mother, key); 
+} 
+
+
 Person* Tree::getPerson(string wanted, Person* start){
-    if (start == nullptr){
-        return nullptr;
-    }
-    if (start->father->name == wanted){
-        return start->father;
-    }else if (start->name == wanted){
+   
+   if(start->name == wanted || (start->father == nullptr && start->mother== nullptr))
         return start;
-    }else if(start->mother->name == wanted){
-        return start->mother;
-    }
-    Person* f_side = getPerson(wanted, start->father);
-    Person* m_side = getPerson(wanted, start->mother);
-
-    if (f_side)
-        return f_side;
-    if (m_side)
-        return m_side;
-
-    return nullptr;
+        
+    Person* ans = nullptr;
+    
+    if(start->father != nullptr)
+        ans = getPerson(wanted,start->father);
+        
+    if(ans == nullptr && start->mother != nullptr)
+        ans = getPerson(wanted, start->mother);
+        
+    return ans;
+   
 }
 
 
 
+/////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+
+
 Tree& Tree::addFather(string child, string father){
-    Person *Pchild = getPerson(child, this->root);
+    
+    Person *Pchild = getPerson(father, this->root);
+
+
     if (Pchild){
-        if (Pchild->father){
+        if (Pchild->father == nullptr){
             Pchild->father = new Person(father);
         }else{
             throw RuleException("Already has a father!");
@@ -50,7 +85,7 @@ Tree& Tree::addFather(string child, string father){
  Tree& Tree::addMother(string child, string mother){
      Person *Pchild = getPerson(child, this->root);
      if (Pchild){
-        if (Pchild->mother){
+        if (Pchild->mother == nullptr){
             Pchild->mother = new Person(mother);
         }else{
             throw RuleException("Already has a mother!");
@@ -61,18 +96,57 @@ Tree& Tree::addFather(string child, string father){
      return *this;
  }
 
+string Tree::relation(string relate)
+{
+    return "";
+    //return search(this->root, relate)->name;
+}
+
+string Tree::find(string family_relation )
+{
+    return " ";
+    
+    
+    // int height = 0;// the height of the realation acording to the root
+    // char gender = 'n';// n = nun, m = male, f = fmale
+    
+    // if(family_relation == string("me"))
+    // {
+    //     return this->root->name;
+
+    // }
+    // if(family_relation == string("father"))
+    // {
+    //     height = 1;
+    //     gender = 'm';
+    // }
+    // if(family_relation == string("mother"))
+    // {
+    //     height = 1;
+    //     gender = 'f';
+    // }
+    //     if(family_relation == string("grandfather"))
+    // {
+    //     height = 2;
+    //     gender = 'm';
+    // }
+    //     if(family_relation == string("grandmother"))
+    // {
+    //     height = 2;
+    //     gender = 'f';
+    // }
+    // else
+    // {
+    //     //////////// enter the abillity to breake the great-grandfather
+    // }
+    
+    // return search(height, gender,this->root)->name;
+}
 
 
-string Tree::relation(string relate){
-    return " ";
-}
-string Tree::find(string family_relation ){
-    return " ";
-}
 void Tree::display(){
     return;
 }
-
 //Removes by string name
 void Tree::remove(string toDelete){
     if (this->root->name == toDelete){
