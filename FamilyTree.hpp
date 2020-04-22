@@ -14,6 +14,7 @@ namespace family{
     class Person{
         public:
             string name;
+            int gender; // man =0; woman = 1;
             Person* father;
             Person* mother;
 
@@ -34,20 +35,27 @@ namespace family{
     class Tree{
         public:
         Person* root;
-            Tree(string child){
-                root = new Person(child);
-            }
-//TODO Destructor?
-            Tree& addFather(string child, string father);
-            Tree& addMother(string child, string mother);
 
-            Person *getPerson(string wanted, Person *start);
-            
-            string relation(string family_memeber_name);
-            string find(string family_relation );
-            void display();
-            void remove(string name);
-            void remove(Person *toDelete);
+        Tree(string child){
+            root = new Person(child);
+        }
+
+        ~Tree(){
+            delete root;
+        }
+        
+        Tree& addFather(string child, string father);
+        Tree& addMother(string child, string mother);
+
+        Person *getPerson(string wanted, Person *start);
+
+        string relation(string family_memeber_name);
+        int relationDegree(Person *current, string relate, int t);
+
+        string find(string family_relation );
+        void display();
+        void remove(string name);
+        void remove(Person *toDelete);
 
     };
 
