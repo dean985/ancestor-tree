@@ -1,6 +1,7 @@
 #include "FamilyTree.hpp"
+#include <iostream>
 using namespace family;
-//TODO start with father -> root -> mother
+using namespace std;
 /**
  * This method receives two arguments - 
  *      name of the person wanted
@@ -8,24 +9,21 @@ using namespace family;
  * It returns the node of that person, going by father-root-mother -> Left-Root-Right
  */
 Person* Tree::getPerson(string wanted, Person* start){
-    if (start == nullptr){
-        return nullptr;
+   if ((start->name).compare(wanted) == 0){
+       return start;
+   }
+    if (start->father != nullptr) {
+        Person *ans = getPerson(wanted, start->father);
+        if (ans != nullptr){
+            return ans;
+        }
     }
-    if (start->father->name == wanted){
-        return start->father;
-    }else if (start->name == wanted){
-        return start;
-    }else if(start->mother->name == wanted){
-        return start->mother;
+    if (start->mother != nullptr){
+        Person *ans = getPerson(wanted, start->mother);
+        if (ans != nullptr){
+            return ans;
+        }
     }
-    Person* f_side = getPerson(wanted, start->father);
-    Person* m_side = getPerson(wanted, start->mother);
-
-    if (f_side)
-        return f_side;
-    if (m_side)
-        return m_side;
-
     return nullptr;
 }
 
@@ -33,9 +31,10 @@ Person* Tree::getPerson(string wanted, Person* start){
 
 Tree& Tree::addFather(string child, string father){
     Person *Pchild = getPerson(child, this->root);
-    if (Pchild){
-        if (Pchild->father){
+    if (Pchild != nullptr){
+        if (Pchild->father == nullptr){
             Pchild->father = new Person(father);
+            return *this;                              
         }else{
             throw RuleException("Already has a father!");
         }
@@ -48,10 +47,11 @@ Tree& Tree::addFather(string child, string father){
 
 
  Tree& Tree::addMother(string child, string mother){
-     Person *Pchild = getPerson(child, this->root);
-     if (Pchild){
-        if (Pchild->mother){
+    Person *Pchild = getPerson(child, this->root);
+     if (Pchild != nullptr){
+        if (Pchild->mother == nullptr){
             Pchild->mother = new Person(mother);
+            return *this;                               
         }else{
             throw RuleException("Already has a mother!");
         }

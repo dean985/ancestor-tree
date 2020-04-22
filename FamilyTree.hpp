@@ -17,35 +17,32 @@ namespace family{
             Person* father;
             Person* mother;
 
-            Person(string _name, Person* pa, Person* ma){
-                name = _name;
-                father = pa;
-                mother = ma;
-            }
             Person(string _name){
                 name = _name;
                 father = nullptr;
                 mother = nullptr;
             }
+            ~Person(){
+                if (father)
+                    delete father;
+                if (mother)
+                    delete mother;
+            }
+
     };
 
     class Tree{
-        Person* root;
-
         public:
-            Tree(){
-                root = nullptr;
-            }
+        Person* root;
             Tree(string child){
-                Person* p  = new Person(child, nullptr, nullptr);
-                root = p;
+                root = new Person(child);
             }
 //TODO Destructor?
             Tree& addFather(string child, string father);
             Tree& addMother(string child, string mother);
 
             Person *getPerson(string wanted, Person *start);
-
+            
             string relation(string family_memeber_name);
             string find(string family_relation );
             void display();
