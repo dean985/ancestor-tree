@@ -69,7 +69,21 @@ string Tree::relation(string relate){
 string Tree::find(string family_relation ){
     return " ";
 }
+
+void printTree(int s, Person* root){
+    if(root){
+        s += 6;
+        printTree(s, root->father);
+        std::cout << endl;
+        for (int i = 6; i < s; i++){
+            std::cout << " ";
+        }
+        std::cout << root->name << std::endl;
+        printTree(s, root->mother);
+    }
+}
 void Tree::display(){
+    printTree(0, root);
     return;
 }
 
