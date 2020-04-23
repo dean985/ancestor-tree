@@ -152,7 +152,7 @@ Tree& Tree::addFather(string child, string father){
 string Find(Person* root,string name) {
 
     if(root == NULL){
-        return "x";
+        return "nullll";
     }
 
     if((int)name.find('-') == -1){
