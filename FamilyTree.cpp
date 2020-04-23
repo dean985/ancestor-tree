@@ -35,20 +35,6 @@ Person* Tree::getPerson(string wanted, Person* start){
     return nullptr;
 }
 
-Person* search(int height,char gender,Person* root)
-{
-    if(height == 0)
-        return root;
-    if(gender == 'm')
-        {
-            return search(height - 1, gender,root->father);
-        }
-    if(gender == 'f')
-        {
-            return search(height - 1, gender,root->mother);
-        }
-        return NULL;
-}
 
 int Tree::relationDegree(Person* current, string relate, int t){
     if (current == nullptr)
@@ -163,68 +149,68 @@ Tree& Tree::addFather(string child, string father){
      return *this;
  }
 
+string Find(Person* root,string name) {
+
+    if(root == NULL){
+        return "x";
+    }
+
+    if((int)name.find('-') == -1){
+
+        if((int)name.find("father") != -1 && root->father){
+            return root->father->name;
+        }
+        if((int)name.find("mother") != -1 && root->mother){
+            return root->mother->name;
+        }
+        else
+            return "nullll";
+    }
+
+    int index = name.find('-');
+    index++;
+    int len = name.length();
+
+    if(Find(root->father,name.substr(index,len)) != "nullll"){
+        return Find(root->father,name.substr(index,len));
+    } else if(Find(root->mother,name.substr(index,len)) != "nullll" ){
+        return Find(root->mother,name.substr(index,len));
+    }
+
+    return "nullll";
+}
+
 string Tree::find(string family_relation )
 {
-    int height = 0;// the height of the realation acording to the root
-    char gender = 'n';// n = nun, m = male, f = fmale
-    
-    if(family_relation == string("me"))
-    {
-        return this->root->name;
-    }
-    else if(family_relation == string("father"))
-    {
-        height = 1;
-        gender = 'm';
-    }
-   else if(family_relation == string("mother"))
-    {
-        height = 1;
-        gender = 'f';
-    }
-  else  if(family_relation == string("grandfather"))
-    {
-        height = 2;
-        gender = 'm';
-    }
-    else  if(family_relation == string("grandmother"))
-    {
-        height = 2;
-        gender = 'f';
-    }
-    else
-    {
-        int m = 0;
-        string* t = parsing(family_relation, &m);
-        if(t[0] != "great")
-        {
-             throw RuleException("not correct syntex");
 
+      if (family_relation == "me")
+          return this->root->name;
+      else if (this->root->father && family_relation == "father"){
+          return this->root->father->name;
+      }
+      else if(this->root->mother && family_relation == "mother"){
+          return this->root->mother->name;
+      }
+      else if (!this->root->father && family_relation == "father"){
+          throw RuleException(family_relation + " isn't there");
+      }
+      else if (!this->root->mother && family_relation =="mother"){          
+          throw RuleException(family_relation + " isn't there");
+      }
+
+      string f_side, m_side;
+      if (this->root->father){
+          f_side = Find(this->root->father, family_relation);
+          if (f_side != "nullll")
+              return f_side;
+      }
+      if (this->root->mother){
+          m_side = Find(this->root->mother, family_relation);
+        if (m_side != "nullll"){
+            return m_side;
         }
-            
-        std::cout << m << std::endl;    
-            
-        for(int i = 0; i < m; i++)
-        {
-            if(t[i] != "grandmother" && t[i] != "grandfather")
-            {
-                if(t[i] != "great")
-                {
-                    throw RuleException("not correct syntex");
-                }
-            }
-            
-        }
-        
-        height = m+1;
-        if(t[m-1] == "grandmother")
-            gender='f';
-        if(t[m-1] == "grandfather")
-            gender='m';
-      
-    }
-    
-    return search(height, gender,this->root)->name;
+      }
+      throw RuleException("Couldn't find it in the tree");
 }
 
 string Tree::relation(string relate){
