@@ -9,7 +9,7 @@ using namespace std;
  * It returns the node of that person, going by father-root-mother -> Left-Root-Right
  */
 Person* Tree::getPerson(string wanted, Person* start){
-   if ((start->name).compare(wanted) == 0){
+   if ((start->name) == wanted){
        return start;
    }
     if (start->father != nullptr) {
@@ -52,7 +52,7 @@ Tree& Tree::addFather(string child, string father){
      if (Pchild != nullptr){
         if (Pchild->mother == nullptr){
             Pchild->mother = new Person(mother);
-            Pchild->gender = 1;
+            Pchild->mother->gender = 1;
             return *this;                               
         }else{
             throw RuleException("Already has a mother!");
