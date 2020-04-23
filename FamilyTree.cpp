@@ -2,6 +2,33 @@
 #include <iostream>
 using namespace family;
 
+using namespace std;
+/**
+ * This method receives two arguments - 
+ *      name of the person wanted
+ *      the person in the tree to start search from
+ * It returns the node of that person, going by father-root-mother -> Left-Root-Right
+ */
+Person* Tree::getPerson(string wanted, Person* start){
+   if ((start->name) == wanted){
+       return start;
+   }
+    if (start->father != nullptr) {
+        Person *ans = getPerson(wanted, start->father);
+        if (ans != nullptr){
+            return ans;
+        }
+    }
+    if (start->mother != nullptr){
+        Person *ans = getPerson(wanted, start->mother);
+        if (ans != nullptr){
+            return ans;
+        }
+    }
+    return nullptr;
+}
+
+
 
 
 
@@ -27,43 +54,22 @@ Person* search(int height,char gender,Person* root)
 
 
 
-Person* printInorder( Person* node, string key) 
-{ 
-            return nullptr; 
-
-  if (node == nullptr) 
-        return nullptr; 
-  
-    /* first recur on left child */
-    if(node->father != nullptr)
-        printInorder(node->father,key); 
-  
-    /* then print the data of node */
-    if(node->name == string(key))
-        return node;
-  
-    /* now recur on right child */
-    if(node->mother != nullptr)
-        return printInorder(node->mother,key); 
-} 
-
-
-Person* Tree::getPerson(string wanted, Person* start){
+// Person* Tree::getPerson(string wanted, Person* start){
    
-   if(start->name == wanted || (start->father == nullptr && start->mother== nullptr))
-        return start;
+//    if(start->name == wanted || (start->father == nullptr && start->mother== nullptr))
+//         return start;
         
-    Person* ans = nullptr;
+//     Person* ans = nullptr;
     
-    if(start->father != nullptr)
-        ans = getPerson(wanted,start->father);
+//     if(start->father != nullptr)
+//         ans = getPerson(wanted,start->father);
         
-    if(ans == nullptr && start->mother != nullptr)
-        ans = getPerson(wanted, start->mother);
+//     if(ans == nullptr && start->mother != nullptr)
+//         ans = getPerson(wanted, start->mother);
         
-    return ans;
+//     return ans;
    
-}
+// }
 
 string* parsing(string text, int* spaces){
         int t = 0;
@@ -104,13 +110,14 @@ string* parsing(string text, int* spaces){
 
 
 Tree& Tree::addFather(string child, string father){
-    
-    Person *Pchild = getPerson(father, this->root);
 
-
+    Person *Pchild = getPerson(child, this->root);
     if (Pchild){
+
         if (Pchild->father == nullptr){
             Pchild->father = new Person(father);
+            Pchild->father->gender = 0;
+            return *this;                              
         }else{
             throw RuleException("Already has a father!");
         }
@@ -127,6 +134,8 @@ Tree& Tree::addFather(string child, string father){
      if (Pchild){
         if (Pchild->mother == nullptr){
             Pchild->mother = new Person(mother);
+            Pchild->mother->gender = 1;
+            return *this;                               
         }else{
             throw RuleException("Already has a mother!");
         }
@@ -151,7 +160,6 @@ string Tree::find(string family_relation )
     if(family_relation == string("me"))
     {
         return this->root->name;
-
     }
     else if(family_relation == string("father"))
     {
@@ -206,8 +214,71 @@ string Tree::find(string family_relation )
     return search(height, gender,this->root)->name;
 }
 
+string Tree::relation(string relate){
+    Person *currentP = getPerson(relate, root);
+    if (!currentP)
+        return "unrelated";
+    int degree = relationDegree(root, relate, 0);
+    if (degree == 1)
+        return "me";
+    else if (degree == 2){
+        if (currentP->gender == 0){
+            return "father";
+        }
+        else{
+            return "mother";
+        }
+    }
+    else if (degree == 3){
+        if (currentP->gender == 0){
+            return "grandfather";
+        }else{
+            return "grandmother";
+        }
+    }
+    else {
+        string ans = "";
+        for (int i = 3; i < degree; i++)
+            ans = "great-" + ans;         
+        if (currentP->gender == 0)
+            ans += "grandfather";
+        else
+            ans += "grandmother";
+
+        return ans + "  " + relate;
+    }
+
+    return "PROBLEM ";
+}
+int Tree::relationDegree(Person* current, string relate, int t){
+    if (current == nullptr)
+        return (-1) * t;
+    if(current->name == relate)
+        return 1;
+    else{
+        int fathers = 1 + relationDegree(current->father, relate, t + 1);
+        int mothers = 1 + relationDegree(current->mother, relate, t + 1);
+        if (fathers > 0)
+            return fathers;
+        else
+            return mothers;
+    }
+}
+void printTree(int s, Person* root){
+    if(root){
+        s += 6;
+        printTree(s, root->father);
+        std::cout << endl;
+        for (int i = 6; i < s; i++){
+            std::cout << " ";
+        }
+        std::cout << root->name << std::endl;
+        printTree(s, root->mother);
+    }
+}
 
 void Tree::display(){
+    printTree(0, root);
     return;
 }
 //Removes by string name

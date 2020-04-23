@@ -14,43 +14,48 @@ namespace family{
     class Person{
         public:
             string name;
+            int gender; // man =0; woman = 1;
             Person* father;
             Person* mother;
 
-            Person(string _name, Person* pa, Person* ma){
-                name = _name;
-                father = pa;
-                mother = ma;
-            }
             Person(string _name){
                 name = _name;
                 father = nullptr;
                 mother = nullptr;
             }
+            ~Person(){
+                if (father)
+                    delete father;
+                if (mother)
+                    delete mother;
+            }
+
     };
 
     class Tree{
+        public:
         Person* root;
 
-        public:
-            Tree(){
-                root = nullptr;
-            }
-            Tree(string child){
-                Person* p  = new Person(child, nullptr, nullptr);
-                root = p;
-            }
-//TODO Destructor?
-            Tree& addFather(string child, string father);
-            Tree& addMother(string child, string mother);
+        Tree(string child){
+            root = new Person(child);
+        }
 
-            Person *getPerson(string wanted, Person *start);
+        ~Tree(){
+            delete root;
+        }
+        
+        Tree& addFather(string child, string father);
+        Tree& addMother(string child, string mother);
 
-            string relation(string family_memeber_name);
-            string find(string family_relation );
-            void display();
-            void remove(string name);
-            void remove(Person *toDelete);
+        Person *getPerson(string wanted, Person *start);
+
+        string relation(string family_memeber_name);
+        int relationDegree(Person *current, string relate, int t);
+
+        string find(string family_relation );
+        void display();
+        void remove(string name);
+        void remove(Person *toDelete);
 
     };
 
