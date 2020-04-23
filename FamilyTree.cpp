@@ -67,11 +67,12 @@ void printTree(int s, Person* root){
 //Removes by Person
 void Tree::remove(Person* toDelete){
     if (toDelete != nullptr){
-        delete (toDelete->father);
-        toDelete->father = nullptr;
-        delete (toDelete->mother);
-        toDelete->mother = nullptr;
-        delete (toDelete);
+        delete toDelete;
+        // delete (toDelete->father);
+        // toDelete->father = nullptr;
+        // delete (toDelete->mother);
+        // toDelete->mother = nullptr;
+        // delete (toDelete);
     }
 }
 
@@ -257,7 +258,9 @@ void Tree::display(){
 }
 
 Person* getChild(Person* root, Person* parent){
-    if (root->father && root->father->name == parent->name){
+    
+    if(root != nullptr)
+    if (root->father != nullptr && root->father->name == parent->name){
         return root;
     }
     else if (root->mother && root->mother->name == parent->name ){
@@ -265,14 +268,18 @@ Person* getChild(Person* root, Person* parent){
     }
 
     try{
-        Person* f_side = getChild(root->father, parent);
+        Person* f_side =nullptr;
+        if(root != nullptr)
+             f_side = getChild(root->father, parent);
         if (f_side)
             return f_side;
     }catch(...){
 
     }
     try{
-        Person* m_side = getChild(root->mother, parent);
+       Person* m_side =nullptr;
+        if(root != nullptr)
+            m_side = getChild(root->mother, parent);
         if (m_side)
             return m_side;
     }catch(...){
