@@ -202,6 +202,8 @@ string Tree::find(string family_relation )
 
         }
             
+        std::cout << m << std::endl;    
+            
         for(int i = 0; i < m; i++)
         {
             if(t[i] != "grandmother" && t[i] != "grandfather")
@@ -214,7 +216,7 @@ string Tree::find(string family_relation )
             
         }
         
-        height = m;
+        height = m+1;
         if(t[m-1] == "grandmother")
             gender='f';
         if(t[m-1] == "grandfather")
@@ -256,7 +258,7 @@ string Tree::relation(string relate){
         else
             ans += "grandmother";
 
-        return ans + "  " + relate;
+        return ans;
     }
 
     return "PROBLEM ";
