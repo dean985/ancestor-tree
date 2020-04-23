@@ -3,6 +3,13 @@
 using namespace family;
 
 using namespace std;
+
+
+
+////////////////////////////////////////////////////////////
+/////////////// assistent functions ///////////////////////
+//////////////////////////////////////////////////////////
+
 /**
  * This method receives two arguments - 
  *      name of the person wanted
@@ -28,15 +35,6 @@ Person* Tree::getPerson(string wanted, Person* start){
     return nullptr;
 }
 
-
-
-
-
-
-////////////////////////////////////////////////////////////
-/////////////// assistent functions ///////////////////////
-//////////////////////////////////////////////////////////
-
 Person* search(int height,char gender,Person* root)
 {
     if(height == 0)
@@ -52,24 +50,44 @@ Person* search(int height,char gender,Person* root)
         return NULL;
 }
 
+int Tree::relationDegree(Person* current, string relate, int t){
+    if (current == nullptr)
+        return (-1) * t;
+    if(current->name == relate)
+        return 1;
+    else{
+        int fathers = 1 + relationDegree(current->father, relate, t + 1);
+        int mothers = 1 + relationDegree(current->mother, relate, t + 1);
+        if (fathers > 0)
+            return fathers;
+        else
+            return mothers;
+    }
+}
 
+void printTree(int s, Person* root){
+    if(root){
+        s += 6;
+        printTree(s, root->father);
+        std::cout << endl;
+        for (int i = 6; i < s; i++){
+            std::cout << " ";
+        }
+        std::cout << root->name << std::endl;
+        printTree(s, root->mother);
+    }
+}
 
-// Person* Tree::getPerson(string wanted, Person* start){
-   
-//    if(start->name == wanted || (start->father == nullptr && start->mother== nullptr))
-//         return start;
-        
-//     Person* ans = nullptr;
-    
-//     if(start->father != nullptr)
-//         ans = getPerson(wanted,start->father);
-        
-//     if(ans == nullptr && start->mother != nullptr)
-//         ans = getPerson(wanted, start->mother);
-        
-//     return ans;
-   
-// }
+//Removes by Person
+void Tree::remove(Person* toDelete){
+    if (toDelete != nullptr){
+        delete (toDelete->father);
+        toDelete->father = nullptr;
+        delete (toDelete->mother);
+        toDelete->mother = nullptr;
+        delete (toDelete);
+    }
+}
 
 string* parsing(string text, int* spaces){
         int t = 0;
@@ -144,13 +162,6 @@ Tree& Tree::addFather(string child, string father){
     }
      return *this;
  }
-
-string Tree::relation(string relate)
-{
-  cout<<printInorder(this->root, relate)->name<<endl;
-    return "";
-    //return search(this->root, relate)->name;
-}
 
 string Tree::find(string family_relation )
 {
@@ -250,66 +261,47 @@ string Tree::relation(string relate){
 
     return "PROBLEM ";
 }
-int Tree::relationDegree(Person* current, string relate, int t){
-    if (current == nullptr)
-        return (-1) * t;
-    if(current->name == relate)
-        return 1;
-    else{
-        int fathers = 1 + relationDegree(current->father, relate, t + 1);
-        int mothers = 1 + relationDegree(current->mother, relate, t + 1);
-        if (fathers > 0)
-            return fathers;
-        else
-            return mothers;
-    }
-}
-void printTree(int s, Person* root){
-    if(root){
-        s += 6;
-        printTree(s, root->father);
-        std::cout << endl;
-        for (int i = 6; i < s; i++){
-            std::cout << " ";
-        }
-        std::cout << root->name << std::endl;
-        printTree(s, root->mother);
-    }
-}
+
 
 void Tree::display(){
     printTree(0, root);
     return;
 }
+
+Person* getChild(Person* root, Person* parent){
+    if (root->father && root->father->name == parent->name){
+        return root;
+    }
+    if (root->mother && root->mother->name == parent->name ){
+        return root;
+    }
+
+    getChild(root->father, parent);
+    getChild(root->mother, parent);
+    return nullptr;
+}
+
 //Removes by string name
 void Tree::remove(string toDelete){
     if (this->root->name == toDelete){
-        throw RuleException("Cann't delete root of the tree!");
+        throw RuleException("Can't delete root of the tree!");
     }
     Person *startDelete = getPerson(toDelete, this->root);
+    Person *child = getChild(this->root, startDelete);
+    int gender = startDelete->gender;
     if (startDelete){
         remove(startDelete);
+        switch (gender){
+            case 0:
+                child->father = nullptr;
+                break;
+            case 1:
+                child->mother = nullptr;
+                break;
+        }
     }else{
         throw RuleException("The person to be deleted wasn't found!");
     }
 }
 
-//Removes by Person
-void Tree::remove(Person* toDelete){
-    if(!(toDelete->father) && !(toDelete->mother)){
-        //It's an orphan
-        delete (toDelete);
-    }
 
-    if(!(toDelete->father)){
-        //if he has a father
-        remove(toDelete->father);
-    }
-
-    if(!(toDelete->mother)){
-        //if he has a mother
-        remove(toDelete->mother);
-    }
-
-    delete (toDelete);
-}

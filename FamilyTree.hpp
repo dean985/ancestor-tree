@@ -24,10 +24,8 @@ namespace family{
                 mother = nullptr;
             }
             ~Person(){
-                if (father)
-                    delete father;
-                if (mother)
-                    delete mother;
+                delete father;
+                delete mother;
             }
 
     };
