@@ -1,6 +1,7 @@
 #include "FamilyTree.hpp"
 #include <iostream>
 using namespace family;
+
 using namespace std;
 /**
  * This method receives two arguments - 
@@ -29,9 +30,90 @@ Person* Tree::getPerson(string wanted, Person* start){
 
 
 
+
+
+
+////////////////////////////////////////////////////////////
+/////////////// assistent functions ///////////////////////
+//////////////////////////////////////////////////////////
+
+Person* search(int height,char gender,Person* root)
+{
+    if(height == 0)
+        return root;
+    if(gender == 'm')
+        {
+            return search(height - 1, gender,root->father);
+        }
+    if(gender == 'f')
+        {
+            return search(height - 1, gender,root->mother);
+        }
+        return NULL;
+}
+
+
+
+// Person* Tree::getPerson(string wanted, Person* start){
+   
+//    if(start->name == wanted || (start->father == nullptr && start->mother== nullptr))
+//         return start;
+        
+//     Person* ans = nullptr;
+    
+//     if(start->father != nullptr)
+//         ans = getPerson(wanted,start->father);
+        
+//     if(ans == nullptr && start->mother != nullptr)
+//         ans = getPerson(wanted, start->mother);
+        
+//     return ans;
+   
+// }
+
+string* parsing(string text, int* spaces){
+        int t = 0;
+        // Searching for spaces - in order to understand
+        // how many words are there
+        for(int i =0 ; i<text.length(); i++){
+            if (text[i] == '-') t++;
+        }
+        *spaces = t+1;
+        //Array of words
+        string* str = new string[*spaces];
+        int letters = 0;
+        int wordlength = 0;
+
+        for (int i = 0; i <text.length(); i++){
+            //if it is a space
+            if (text[i] != '-') letters++;
+            // else , it is a letter.
+            else {
+                str[wordlength] = text.substr(i-letters, letters);
+                letters = 0;
+                wordlength++;
+            }
+            //If reached to the end of the string
+            if (i == text.length()-1){
+                str[wordlength] = text.substr(i+1-letters, letters+1);
+                wordlength++;
+            }
+        }
+        return str;
+    }
+
+
+/////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+
+
 Tree& Tree::addFather(string child, string father){
+
     Person *Pchild = getPerson(child, this->root);
-    if (Pchild != nullptr){
+    if (Pchild){
+
         if (Pchild->father == nullptr){
             Pchild->father = new Person(father);
             Pchild->father->gender = 0;
@@ -48,8 +130,8 @@ Tree& Tree::addFather(string child, string father){
 
 
  Tree& Tree::addMother(string child, string mother){
-    Person *Pchild = getPerson(child, this->root);
-     if (Pchild != nullptr){
+     Person *Pchild = getPerson(child, this->root);
+     if (Pchild){
         if (Pchild->mother == nullptr){
             Pchild->mother = new Person(mother);
             Pchild->mother->gender = 1;
@@ -63,7 +145,74 @@ Tree& Tree::addFather(string child, string father){
      return *this;
  }
 
+string Tree::relation(string relate)
+{
+  cout<<printInorder(this->root, relate)->name<<endl;
+    return "";
+    //return search(this->root, relate)->name;
+}
 
+string Tree::find(string family_relation )
+{
+    int height = 0;// the height of the realation acording to the root
+    char gender = 'n';// n = nun, m = male, f = fmale
+    
+    if(family_relation == string("me"))
+    {
+        return this->root->name;
+    }
+    else if(family_relation == string("father"))
+    {
+        height = 1;
+        gender = 'm';
+    }
+   else if(family_relation == string("mother"))
+    {
+        height = 1;
+        gender = 'f';
+    }
+  else  if(family_relation == string("grandfather"))
+    {
+        height = 2;
+        gender = 'm';
+    }
+    else  if(family_relation == string("grandmother"))
+    {
+        height = 2;
+        gender = 'f';
+    }
+    else
+    {
+        int m = 0;
+        string* t = parsing(family_relation, &m);
+        if(t[0] != "great")
+        {
+             throw RuleException("not correct syntex");
+
+        }
+            
+        for(int i = 0; i < m; i++)
+        {
+            if(t[i] != "grandmother" && t[i] != "grandfather")
+            {
+                if(t[i] != "great")
+                {
+                    throw RuleException("not correct syntex");
+                }
+            }
+            
+        }
+        
+        height = m;
+        if(t[m-1] == "grandmother")
+            gender='f';
+        if(t[m-1] == "grandfather")
+            gender='m';
+      
+    }
+    
+    return search(height, gender,this->root)->name;
+}
 
 string Tree::relation(string relate){
     Person *currentP = getPerson(relate, root);
@@ -115,10 +264,6 @@ int Tree::relationDegree(Person* current, string relate, int t){
             return mothers;
     }
 }
-string Tree::find(string family_relation ){
-    return " ";
-}
-
 void printTree(int s, Person* root){
     if(root){
         s += 6;
@@ -131,11 +276,11 @@ void printTree(int s, Person* root){
         printTree(s, root->mother);
     }
 }
+
 void Tree::display(){
     printTree(0, root);
     return;
 }
-
 //Removes by string name
 void Tree::remove(string toDelete){
     if (this->root->name == toDelete){
