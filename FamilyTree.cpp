@@ -25,16 +25,26 @@ Person* search(int height,char gender,Person* root)
         return NULL;
 }
 
-Person* search(Person* root, string key) 
+
+
+Person* printInorder( Person* node, string key) 
 { 
-    if (root == nullptr || root->name == key) 
-       return root; 
-     
-    // Key is greater than root's key 
-        return search(root->father, key); 
+            return nullptr; 
+
+  if (node == nullptr) 
+        return nullptr; 
   
-    // Key is smaller than root's key 
-        return search(root->mother, key); 
+    /* first recur on left child */
+    if(node->father != nullptr)
+        printInorder(node->father,key); 
+  
+    /* then print the data of node */
+    if(node->name == string(key))
+        return node;
+  
+    /* now recur on right child */
+    if(node->mother != nullptr)
+        return printInorder(node->mother,key); 
 } 
 
 
@@ -55,6 +65,36 @@ Person* Tree::getPerson(string wanted, Person* start){
    
 }
 
+string* parsing(string text, int* spaces){
+        int t = 0;
+        // Searching for spaces - in order to understand
+        // how many words are there
+        for(int i =0 ; i<text.length(); i++){
+            if (text[i] == '-') t++;
+        }
+        *spaces = t+1;
+        //Array of words
+        string* str = new string[*spaces];
+        int letters = 0;
+        int wordlength = 0;
+
+        for (int i = 0; i <text.length(); i++){
+            //if it is a space
+            if (text[i] != '-') letters++;
+            // else , it is a letter.
+            else {
+                str[wordlength] = text.substr(i-letters, letters);
+                letters = 0;
+                wordlength++;
+            }
+            //If reached to the end of the string
+            if (i == text.length()-1){
+                str[wordlength] = text.substr(i+1-letters, letters+1);
+                wordlength++;
+            }
+        }
+        return str;
+    }
 
 
 /////////////////////////////////////////////////////////////
@@ -98,49 +138,72 @@ Tree& Tree::addFather(string child, string father){
 
 string Tree::relation(string relate)
 {
+  cout<<printInorder(this->root, relate)->name<<endl;
     return "";
     //return search(this->root, relate)->name;
 }
 
 string Tree::find(string family_relation )
 {
-    return " ";
+    int height = 0;// the height of the realation acording to the root
+    char gender = 'n';// n = nun, m = male, f = fmale
     
-    
-    // int height = 0;// the height of the realation acording to the root
-    // char gender = 'n';// n = nun, m = male, f = fmale
-    
-    // if(family_relation == string("me"))
-    // {
-    //     return this->root->name;
+    if(family_relation == string("me"))
+    {
+        return this->root->name;
 
-    // }
-    // if(family_relation == string("father"))
-    // {
-    //     height = 1;
-    //     gender = 'm';
-    // }
-    // if(family_relation == string("mother"))
-    // {
-    //     height = 1;
-    //     gender = 'f';
-    // }
-    //     if(family_relation == string("grandfather"))
-    // {
-    //     height = 2;
-    //     gender = 'm';
-    // }
-    //     if(family_relation == string("grandmother"))
-    // {
-    //     height = 2;
-    //     gender = 'f';
-    // }
-    // else
-    // {
-    //     //////////// enter the abillity to breake the great-grandfather
-    // }
+    }
+    else if(family_relation == string("father"))
+    {
+        height = 1;
+        gender = 'm';
+    }
+   else if(family_relation == string("mother"))
+    {
+        height = 1;
+        gender = 'f';
+    }
+  else  if(family_relation == string("grandfather"))
+    {
+        height = 2;
+        gender = 'm';
+    }
+    else  if(family_relation == string("grandmother"))
+    {
+        height = 2;
+        gender = 'f';
+    }
+    else
+    {
+        int m = 0;
+        string* t = parsing(family_relation, &m);
+        if(t[0] != "great")
+        {
+             throw RuleException("not correct syntex");
+
+        }
+            
+        for(int i = 0; i < m; i++)
+        {
+            if(t[i] != "grandmother" && t[i] != "grandfather")
+            {
+                if(t[i] != "great")
+                {
+                    throw RuleException("not correct syntex");
+                }
+            }
+            
+        }
+        
+        height = m;
+        if(t[m-1] == "grandmother")
+            gender='f';
+        if(t[m-1] == "grandfather")
+            gender='m';
+      
+    }
     
-    // return search(height, gender,this->root)->name;
+    return search(height, gender,this->root)->name;
 }
 
 
