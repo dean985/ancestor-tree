@@ -272,22 +272,35 @@ Person* getChild(Person* root, Person* parent){
     if (root->father && root->father->name == parent->name){
         return root;
     }
-    if (root->mother && root->mother->name == parent->name ){
+    else if (root->mother && root->mother->name == parent->name ){
         return root;
     }
 
-    getChild(root->father, parent);
-    getChild(root->mother, parent);
+    try{
+        Person* f_side = getChild(root->father, parent);
+        if (f_side)
+            return f_side;
+    }catch(...){
+
+    }
+    try{
+        Person* m_side = getChild(root->mother, parent);
+        if (m_side)
+            return m_side;
+    }catch(...){
+
+    }
     return nullptr;
 }
 
-//Removes by string name
+//Removes by string nameq
 void Tree::remove(string toDelete){
     if (this->root->name == toDelete){
         throw RuleException("Can't delete root of the tree!");
     }
     Person *startDelete = getPerson(toDelete, this->root);
-    Person *child = getChild(this->root, startDelete);
+    Person *current = this->root;
+    Person *child = getChild(current, startDelete);
     int gender = startDelete->gender;
     if (startDelete){
         remove(startDelete);
